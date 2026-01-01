@@ -6,6 +6,8 @@ import matplotlib
 
 matplotlib.use('TkAgg')  # Use TkAgg backend for interactive plots
 
+current_year = 2025
+no_name = "" # Do not include this name in any of the results
 extra = False
 other_view = True
 days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -15,9 +17,8 @@ stop_words = [
     "he", "she", "it", "they", "we", "I", "you", "me", "him", "her", "them",
     "is", "are", "was", "were", "be", "been", "have", "has", "had", "do", "does", "did",
     "not", "very", "so", "then", "there",
-    "this", "that", "these", "those", "which", "who", "whom","my", "people", "for"
+    "this", "that", "these", "those", "which", "who", "whom","my", "people", "for", "as","being", "up", "out", "good", "stuff", "why", "how",no_name 
 ]
-current_year = 2025
 # Word you do not want to see in results
 words_to_remove = []
 stop_words += words_to_remove
@@ -40,6 +41,9 @@ def format_date(date):
     formated_date = ""
     # Clean and parse each date string
     cleaned_date = clean_date_string(date)
+    cleaned_date = cleaned_date.lstrip("\ufeff").strip()
+    cleaned_date  = cleaned_date.title()
+
     try:
         date_object = datetime.strptime(cleaned_date, "%A, %B %d %Y")
     except ValueError:
@@ -84,6 +88,11 @@ def popular_phrases(data):
     all_words = [word for words in data.values() for word in words]
     word_counts = Counter(all_words)
 
+    word_counts = Counter(
+    word for word in all_words
+    if no_name not in word.lower()
+)
+    
     # 2. Most popular words
     top_words = word_counts.most_common(40)
 
@@ -145,7 +154,7 @@ def analyze_and_report(data):
     word_counts = Counter(all_words)
 
     # 2. Most popular words
-    top_words = word_counts.most_common(100)
+    top_words = word_counts.most_common(150)
     a = 0
     while a < len(top_words):
         if a < len(top_words):
@@ -153,6 +162,8 @@ def analyze_and_report(data):
                 top_words.pop(a)
             else:
                 a += 1
+
+    top_words = top_words[:80]
 
     print("Top Words:")
     for word, count in top_words:
@@ -239,4 +250,4 @@ if __name__ == "__main__":
     # create report with how popular days are and most popular words
     analyze_and_report(happy)
     # Most popular phrases
-    popular_phrases(happy)
+    # popular_phrases(happy)
