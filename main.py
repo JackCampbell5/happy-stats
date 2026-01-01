@@ -17,6 +17,7 @@ stop_words = [
     "not", "very", "so", "then", "there",
     "this", "that", "these", "those", "which", "who", "whom","my", "people", "for"
 ]
+current_year = 2025
 # Word you do not want to see in results
 words_to_remove = []
 stop_words += words_to_remove
@@ -60,7 +61,7 @@ def read_file(file_name):
         line = line.lower().rstrip()
 
         # If we hit 2023 start appending the year
-        if line == "2023":
+        if line == str(current_year - 1):
             hit_extra = True
             if not extra:
                 break
@@ -68,9 +69,9 @@ def read_file(file_name):
 
         if ":" in line and any(elem.lower() in line for elem in days):
             if hit_extra:
-                line += " 2023"
+                line += str(" " + str(current_year - 1))
             else:
-                line += " 2024"
+                line += str(" " + str(current_year))
             line = format_date(line)
             happy[line] = []
             current = line
@@ -232,7 +233,7 @@ def analyze_and_report(data):
 if __name__ == "__main__":
     global happy
     happy = {}
-    file_name = os.path.expanduser("~/Documents/Jack/happy-stats-2024.txt")
+    file_name = os.path.expanduser("~/Documents/Coding/happy-things-2025.txt")
     read_file(file_name)
 
     # create report with how popular days are and most popular words
